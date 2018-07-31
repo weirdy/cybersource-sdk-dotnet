@@ -17,7 +17,7 @@ namespace CyberSource.Clients
         /// <summary>
         /// Version of this client.
         /// </summary>
-        public const string CLIENT_LIBRARY_VERSION = "1.4.0";
+        public const string CLIENT_LIBRARY_VERSION = "1.4.2";
 
         /// <summary>
         /// Proxy object that is initialized during start-up, if needed.
@@ -47,6 +47,7 @@ namespace CyberSource.Clients
 
 		static BaseClient()
 		{
+			ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768;
 			SetupProxy();
 		}
 
@@ -370,7 +371,7 @@ namespace CyberSource.Clients
         /// <returns>New instance of X509Certificate2</returns>
         protected static X509Certificate2 GetCertificate(Configuration config)
         {
-            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet;
+            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet;
             return config.Key != null
                 ? new X509Certificate2(config.Key, config.EffectivePassword, flags)
                 : new X509Certificate2(config.EffectiveKeyFilePath, config.EffectivePassword, flags);
@@ -386,7 +387,7 @@ namespace CyberSource.Clients
         protected static X509Certificate2Collection GetCertificateCollection(Configuration config)
         {
             var collection = new X509Certificate2Collection();
-            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet;
+            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet;
             if (config.Key != null)
                 collection.Import(config.Key, config.EffectivePassword, flags);
             else
